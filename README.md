@@ -3,6 +3,21 @@
 本仓库保存从 `yoko_rpa_mcp.exe`（PyInstaller / CPython 3.12）恢复的 Python
 源码，以及在恢复源码基础上整理的本地开发版本。
 
+## 直接使用
+
+不需要自行编译恢复源码。Windows 用户可以下载
+[`yoko_rpa_mcp_noverify.zip`](https://github.com/Usernames686/wechat/releases/download/v1.8.4-local-dev/yoko_rpa_mcp_noverify.zip)，
+完整解压后双击 `start_noverify.cmd`。便携版包含独立本地认证组件，不要求系统安装
+Python，也不依赖云端许可服务；启动成功后会自动打开 `http://127.0.0.1:9922/`。
+
+发布包 SHA-256：
+
+```text
+6B945657F642753A58C52925B7543E98050ADAD54DD89DC10DA067E0055C9343
+```
+
+详细配置和 MCP 接入方式见 [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md)。
+
 ## 目录
 
 | 目录 | 内容 |
@@ -39,6 +54,9 @@
 提交前已将恢复结果里的邮件授权口令、客户标识、客户服务地址和 API 凭据替换为占位值。
 运行时产生的 `.env`、本地许可文件、MCP 配对令牌、日志、数据库和 Python 缓存也由
 `.gitignore` 排除。
+
+需要外部服务的功能通过环境变量或应用控制台填写使用者自己的凭据；可复制
+[`.env.example`](.env.example) 作为源码配置模板。
 
 ## 版本信息
 

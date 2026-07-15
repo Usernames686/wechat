@@ -2,6 +2,7 @@
 # Python 3.12 bytecode (mode: cfg)
 
 import smtplib
+import os
 from email.mime.text import MIMEText
 from email.header import Header
 from typing import Optional
@@ -17,7 +18,13 @@ class EmailConfig:
     __annotations__["smtp_server"] = str
     __annotations__["smtp_port"] = int
     __annotations__["receiver"] = str
-email_config = EmailConfig(sender="EMAIL_ADDRESS", password="SMTP_APP_PASSWORD", smtp_server="SMTP_SERVER", smtp_port=465, receiver="")
+email_config = EmailConfig(
+    sender=os.environ.get("YOKO_ALERT_EMAIL_ADDRESS", ""),
+    password=os.environ.get("YOKO_ALERT_EMAIL_PASSWORD", ""),
+    smtp_server=os.environ.get("YOKO_ALERT_SMTP_SERVER", "smtp.qq.com"),
+    smtp_port=int(os.environ.get("YOKO_ALERT_SMTP_PORT", "465")),
+    receiver=os.environ.get("YOKO_ALERT_EMAIL_RECEIVER", ""),
+)
 class AlertNotifier:
     """AlertNotifier"""
 

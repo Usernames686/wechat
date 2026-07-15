@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "wechat-rpa": {
+      "type": "streamable-http",
+      "url": "http://127.0.0.1:9922/mcp",
+      "headers": {
+        "Authorization": "Bearer MCP_TOKEN"
+      }
+    }
+  }
+}
