@@ -11,3 +11,8 @@ fixture used by the portable release.
 
 The full PyInstaller runtime and executables are distributed as a release asset
 instead of being committed to Git history.
+
+The release executable also applies an equal-length bytecode constant patch for
+non-GBK log glyphs in `api_server`. This prevents Windows GBK stdout from
+interrupting the WeChat 4.1 automatic environment configuration flow. The
+reproducible patcher is available at `tools/patch_pyinstaller_gbk_logs.py`.

@@ -618,7 +618,7 @@ def initialize_multiple_wechat(request, api_key):
     env_error_detected = False
     env_error_message = None
     failed_account_keys = list(failed_key_versions.keys())
-    "🔧 [实例初始化] 成功初始化 "(f'{len(instance_infos)}', " 个实例")
+    "TOOL [实例初始化] 成功初始化 "(f'{len(instance_infos)}', " 个实例")
     active_instance = instance_manager_v2.get_active_instance()
     yield None
     window_handle = active_instance["window_handle"]
@@ -689,7 +689,7 @@ def auto_config_wechat41(request, api_key):
     from silent_narrator import SilentNarrator
     force_narrator = True
     narrator_activated = False
-    print("[AutoConfig] ℹ️ 用户指定强制使用真实讲述人模式，跳过静默模式")
+    print("[AutoConfig] [INFO] 用户指定强制使用真实讲述人模式，跳过静默模式")
     ps_script = "\n        $ErrorActionPreference = 'Stop'\n        Write-Output '[Step 1/3] 正在关闭微信进程'\n        try { Stop-Process -Name WeChat -Force -ErrorAction SilentlyContinue } catch {}\n        try { Stop-Process -Name Weixin -Force -ErrorAction SilentlyContinue } catch {}\n        Start-Sleep -Seconds 2\n        Write-Output '[Step 1/3] 完成'\n\n        $current = (Get-ItemProperty -Path 'HKCU:\\Environment' -Name 'QT_ACCESSIBILITY' -ErrorAction SilentlyContinue).QT_ACCESSIBILITY\n        if ($current -eq '1') {\n          Write-Output '[Step 2/3] 已存在 QT_ACCESSIBILITY=1，跳过设置'\n        } else {\n          Write-Output '[Step 2/3] 正在设置环境变量 QT_ACCESSIBILITY=1'\n          try { \n            Set-ItemProperty -Path 'HKCU:\\Environment' -Name 'QT_ACCESSIBILITY' -Value '1'\n          } catch { throw \"设置环境变量失败: $($_.Exception.Message)\" }\n        }\n        \n        # 确保当前 PowerShell 进程也被修改，这样 Start-Process 启动微信时才能正确继承该变量！\n        $env:QT_ACCESSIBILITY = '1'\n        Write-Output '[Step 2/3] 完成'\n\n        __FALLBACK_NARRATOR__\n\n        Write-Output '[Step 3/3] 正在查找微信安装路径并启动'\n        $wechat = $null\n        $env_path = '__WECHAT_EXEC_PATH__'\n        if ($env_path -ne '' -and (Test-Path $env_path)) {\n          $wechat = $env_path\n          Write-Output \"使用预设微信路径: $wechat\"\n        }\n        if (-not $wechat) {\n          $candidates = @(\n            \"$env:ProgramFiles\\Tencent\\Weixin\\Weixin.exe\",\n            \"$env:ProgramFiles(x86)\\Tencent\\Weixin\\Weixin.exe\",\n            \"$env:LOCALAPPDATA\\Tencent\\Weixin\\Weixin.exe\"\n          )\n          foreach ($c in $candidates) { if (Test-Path $c) { $wechat = $c; break } }\n        }\n        if (-not $wechat) {\n          $roots = @(\"$env:ProgramFiles\\Tencent\", \"$env:ProgramFiles(x86)\\Tencent\", \"$env:LOCALAPPDATA\\Tencent\")\n          foreach ($root in $roots) {\n            try {\n              $found = Get-ChildItem -Path $root -Filter 'Weixin.exe' -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1\n              if ($found) { $wechat = $found.FullName; break }\n            } catch {}\n          }\n        }\n        if (-not $wechat) {\n          Write-Output '[Step 3/3] 未找到微信路径，跳过启动'\n        } else {\n          Write-Output ('已找到微信路径: ' + $wechat)\n          Start-Process -FilePath $wechat\n          Write-Output '[Step 3/3] 完成'\n        }\n        Write-Output 'OK'\n        "
     fallback_str = ""
     ps_script = ps_script.replace("__FALLBACK_NARRATOR__", fallback_str)
@@ -698,8 +698,8 @@ def auto_config_wechat41(request, api_key):
     yield None
     fallback_str = "\n        $nvdaRunning = ($null -ne (Get-Process -Name nvda -ErrorAction SilentlyContinue))\n        $narratorExists = Test-Path 'C:\\Windows\\System32\\Narrator.exe'\n\n        if ($narratorExists) {\n            Write-Output '[Fallback] 正在启动讲述人...'\n            Start-Process -FilePath 'C:\\Windows\\System32\\Narrator.exe'\n            Start-Sleep -Seconds 8\n            Write-Output '[Fallback] 讲述人已启动'\n        } elseif ($nvdaRunning) {\n            Write-Output '[Fallback] 检测到 NVDA 正在运行，使用 NVDA 模式'\n        } else {\n            Write-Output '__NO_SCREEN_READER__'\n            exit 1\n        }\n        "
     narrator_activated = SilentNarrator.activate()
-    print("[AutoConfig] ⚠️ 静默讲述人激活失败，将在 PowerShell 步骤中启动真实 Narrator")
-    print("[AutoConfig] ✅ 静默讲述人已激活（无需启动 Narrator.exe）")
+    print("[AutoConfig] [WARN] 静默讲述人激活失败，将在 PowerShell 步骤中启动真实 Narrator")
+    print("[AutoConfig] OK! 静默讲述人已激活（无需启动 Narrator.exe）")
 @Security(get_api_key)
 def stop_narrator(api_key):
     import threading
@@ -868,7 +868,7 @@ def switch_active_instance(instance_id, api_key):
     active_instance = instance_manager_v2.get_active_instance()
     window_handle = active_instance["window_handle"]
     wx = WeChat(window_handle=window_handle)
-    print("🔧 [实例切换] 使用窗口句柄获取实例 - 句柄: ", f'{window_handle}')
+    print("TOOL [实例切换] 使用窗口句柄获取实例 - 句柄: ", f'{window_handle}')
     account_info = active_instance.get("account_info", {})
     account_id = account_info.get("account_id", "")
     friend_count = 0

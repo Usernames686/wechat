@@ -23,6 +23,8 @@ $env:YOKO_API_BASE = $baseUrl
 $env:SUPABASE_URL = $baseUrl
 $env:SUPABASE_KEY = "local.development.key"
 $env:YOKO_RPA_TOKEN = "local-development-token"
+$env:PYTHONUTF8 = "1"
+$env:PYTHONIOENCODING = "utf-8"
 
 $oldProcesses = Get-CimInstance Win32_Process -Filter "Name='yoko_rpa_mcp.exe'"
 if ($oldProcesses) {
